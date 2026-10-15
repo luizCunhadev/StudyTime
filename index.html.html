@@ -1,0 +1,392 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>StudyTime</title>
+<style>
+:root{--bg:#f1f4f6;--c:#fff;--t:#14202b;--m:#5f6f7c;--a:#0f766e;--w:#d97706;--r:#c2410c;--b:#dbe2e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f171d;--c:#17222b;--t:#e6edf2;--m:#93a4b1;--a:#2dd4bf;--w:#fbbf24;--r:#fb923c;--b:#26343f}}
+:root[data-theme=dark]{--bg:#0f171d;--c:#17222b;--t:#e6edf2;--m:#93a4b1;--a:#2dd4bf;--w:#fbbf24;--r:#fb923c;--b:#26343f}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--t);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header.top{text-align:center;padding:16px 14px 0;max-width:860px;margin:0 auto}.logo{margin:0;font-size:clamp(28px,7vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.1;background:linear-gradient(90deg,#2dd4bf,#38bdf8);-webkit-background-clip:text;background-clip:text;color:transparent}
+main{max-width:860px;margin:0 auto;padding:6px 14px 40px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:16px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.k{color:var(--m);font-size:13px}.v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+h2{font-size:17px;margin:0 0 10px}
+.clock{font-size:clamp(48px,14vw,92px);font-weight:300;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pill{display:inline-block;padding:2px 12px;border-radius:99px;font-size:13px;font-weight:600;background:var(--b);color:var(--m)}
+.running .pill{background:var(--a);color:#fff}.running .clock{color:var(--a)}.paused .pill{background:var(--w);color:#1a1200}.paused .clock{color:var(--w)}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+button.bt{border:1px solid var(--b);background:var(--c);color:var(--t);font:inherit;font-weight:600;padding:10px 18px;border-radius:10px;cursor:pointer}
+button.pri{background:var(--a);border-color:var(--a);color:#fff}button.dng{color:var(--r);border-color:var(--r)}
+:root[data-theme=dark] button.pri{color:#06201d}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) button.pri{color:#06201d}}
+input,select,textarea{width:100%;font:inherit;color:var(--t);background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:9px 10px}
+label{display:block;font-size:13px;color:var(--m);margin:10px 0 4px}
+.bar{height:10px;background:var(--b);border-radius:9px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--a)}
+.tag{display:inline-block;background:var(--b);border-radius:6px;padding:1px 8px;font-size:13px;font-weight:600}
+.it{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--b)}.it:first-child{border-top:0}
+.ch{display:flex;align-items:flex-end;gap:4px;height:120px;overflow-x:auto;padding-top:6px}
+.ch div{flex:1;min-width:18px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:10px;color:var(--m)}
+.ch b{display:block;width:100%;background:var(--a);border-radius:4px 4px 0 0;min-height:2px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:14px;z-index:20}
+.md{background:var(--c);border-radius:14px;padding:20px;max-width:440px;width:100%;max-height:90vh;overflow:auto}
+.ts{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:30}
+.em{color:var(--m);text-align:center;padding:14px}
+#mdock{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:260px;background:var(--c);border:1px solid var(--b);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.28);z-index:8}#mdock[hidden]{display:none}.mdh{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;font-size:12px;color:var(--m)}.mdh span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mdh .bt{padding:0 8px;line-height:22px}#mdock iframe,#mfr{display:block;width:260px;height:200px;border:0}body.hd main{padding-bottom:260px}
+.mdot{width:8px;height:8px;border-radius:50%;background:#64748b;flex:none}.mdot.on{background:#2dd4bf;box-shadow:0 0 8px #2dd4bf}.pmu{display:flex;align-items:center;gap:6px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px}.mt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--m)}.pmu input{width:64px;padding:0;border:0;background:none;accent-color:#2dd4bf}
+.hello{margin:0 2px 14px;text-align:center}.hello h2{margin:0;font-size:clamp(20px,5vw,26px);letter-spacing:-.02em;line-height:1.2}.hello p{margin:4px 0 0;color:var(--m);font-size:14px}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.hello.a{animation:up .5s ease-out both}@media(prefers-reduced-motion:reduce){.hello.a{animation:none}}
+#brain{position:relative;height:clamp(210px,36vh,290px);margin:0 0 4px;background:radial-gradient(60% 60% at 50% 45%,rgba(45,212,191,.14),transparent 70%)}#brain::after{content:'';position:absolute;left:25%;right:25%;bottom:4px;height:12px;background:radial-gradient(closest-side,rgba(0,0,0,.28),transparent);pointer-events:none}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cd{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--bg);color:var(--m)}.cd.e{background:none}.cd.on{background:var(--a);color:#fff;font-weight:700}.cd.td{outline:2px solid var(--t);outline-offset:-2px}
+.ac{border:1px solid var(--b);border-radius:12px;padding:14px;background:var(--c);display:flex;flex-direction:column;gap:6px}.ac.ok{border-color:var(--a)}.bg{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--b);color:var(--m);flex:none}.ac.ok .bg{background:var(--a);color:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .cd.on,:root:not([data-theme=light]) .ac.ok .bg{color:#06201d}}:root[data-theme=dark] .cd.on,:root[data-theme=dark] .ac.ok .bg{color:#06201d}
+.pp{display:flex;flex-direction:column;gap:8px;padding:10px 12px;min-height:100vh;justify-content:center}.pp .clock{font-size:42px}.px .clock{font-size:56px}.pp .bt{padding:6px 12px}.pp .row{margin-top:0}.pm{flex-direction:row;align-items:center;justify-content:space-between}.pm .clock{font-size:28px}
+body.pg{background:radial-gradient(120% 140% at 0% 0%,rgba(45,212,191,.22),transparent 55%),linear-gradient(160deg,#16262d,#0b1319);color:#e6f4f1;--t:#e6f4f1;--m:#8fb3ad;--a:#2dd4bf;--b:rgba(255,255,255,.12);--c:rgba(255,255,255,.06);font-family:"Segoe UI Variable","Segoe UI",system-ui,sans-serif}
+.pg .pp{margin:6px;min-height:calc(100vh - 12px);border:1px solid rgba(255,255,255,.14);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03));-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.18)}
+.pg .pp .clock{font-size:40px;font-weight:300;color:var(--a);text-shadow:0 0 18px rgba(45,212,191,.35)}.pg .pp.px .clock{font-size:52px}.pg .pp.pm .clock{font-size:26px}
+.pg .pp.paused .clock{color:#f5c26b;text-shadow:0 0 18px rgba(245,194,107,.3)}
+.pg .pp .clock{line-height:1.1}.pg .pp .row{justify-content:center}body.pg{overflow-x:hidden}
+.pg .bt{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e6f4f1;border-radius:10px;padding:6px 12px;transition:background .15s,transform .1s}.pg .bt:hover{background:rgba(255,255,255,.16)}.pg .bt:active{transform:scale(.94)}
+.pg .bt.ic{width:36px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.pg .bt.pri{background:rgba(45,212,191,.28);border-color:rgba(45,212,191,.6);color:#bff7ee}.pg .bt.pri:hover{background:rgba(45,212,191,.42)}.pg .bt.dng{color:#fda4a4;border-color:rgba(253,164,164,.4)}
+.pg input,.pg textarea{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:#e6f4f1}
+.pg .pp.running .pill{background:rgba(45,212,191,.25);color:#bff7ee}.pg .pp.paused .pill{background:rgba(245,194,107,.25);color:#f5c26b}
+.ph{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--m)}.dot{width:8px;height:8px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 8px #2dd4bf}.paused .dot{background:#f5c26b;box-shadow:0 0 8px #f5c26b}
+.sb{margin-left:auto;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(255,255,255,.08);border-radius:6px;padding:0 7px;color:#e6f4f1}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.seg{display:inline-flex;gap:2px;padding:3px;margin:2px 0 12px;background:var(--c);border:1px solid var(--b);border-radius:10px;max-width:100%;overflow-x:auto}.seg button{border:0;background:none;color:var(--m);font:inherit;font-size:14px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}.seg button.on{background:rgba(45,212,191,.18);color:var(--a)}
+.pn{background:var(--c);border:1px solid var(--b);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .2s}.pn.open{border-color:rgba(45,212,191,.45)}
+.ph2{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;color:var(--t);transition:background .15s}.ph2:hover{background:rgba(45,212,191,.07)}.ph2:focus-visible{outline:2px solid var(--a);outline-offset:-2px}
+.pic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(45,212,191,.12);color:var(--a);flex:none}.pic svg{width:20px;height:20px}
+.ptx{flex:1;min-width:0}.ptx b{display:block;font-size:16px}.ptx span{font-size:13px;color:var(--m)}.pn.open .ptx span{display:none}
+.chv{color:var(--m);transition:transform .25s;display:flex}.chv svg{width:18px;height:18px}.pn.open .chv{transform:rotate(180deg)}
+.pb{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .3s ease,visibility 0s .3s}.pn.open .pb{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .3s ease,visibility 0s}
+.pi{overflow:hidden;min-height:0}.pc{padding:2px 14px 12px}
+.pi .card{background:var(--bg)}.pi .card input,.pi .card select,.pi .card textarea{background:var(--c)}.pi .cd{background:var(--c)}.pi .cd.e{background:none}.pi .cd.on{background:var(--a)}
+@media(prefers-reduced-motion:reduce){.pb,.chv,.pn{transition:none}}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script></head><body>
+<header class="top"><h1 class="logo">StudyTime</h1><div id="brain" role="img" aria-label="Cérebro 3D animado"></div><div class="hello a"><h2>Olá, Luiz!</h2><p>Cada minuto de estudo é um passo em direção aos seus objetivos.</p></div></header><main id="main"></main><div id="ov"></div><div id="mdock" hidden><div class="mdh"><span id="mdt">YouTube</span><button class="bt" data-a="mclose" aria-label="Fechar player">×</button></div><div id="mfr"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const p2=n=>String(n).padStart(2,'0');
+const ymd=t=>{const d=new Date(t);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
+const hms=ms=>{ms=Math.floor(ms/1000);return p2(Math.floor(ms/3600))+':'+p2(Math.floor(ms%3600/60))+':'+p2(ms%60)};
+const fmt=ms=>{const s=Math.round(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?h+'h'+p2(m)+'min'+(x?p2(x)+'s':''):m?m+'min'+(x?p2(x)+'s':''):x+'s'};
+const fm=ms=>{const m=Math.round(ms/6e4);return m>=60?Math.floor(m/60)+'h'+(m%60?p2(m%60)+'min':''):m+'min'};
+const hh=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const dBR=d=>d.split('-').reverse().join('/');
+const addD=(d,n)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return ymd(x)};
+const wkStart=d=>addD(d,-((new Date(d+'T12:00:00').getDay()+6)%7));
+let db,T=null,goals={d:60,w:420,m:1800},S=[],subs=[],tab='home',F={q:'',s:'',a:'',b:'',},cb=null,cbBack=null;
+const rq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const st=(n,m='readonly')=>db.transaction(n,m).objectStore(n);
+const kvGet=k=>rq(st('kv').get(k)),kvSet=(k,v)=>rq(st('kv','readwrite').put(v,k)),kvDel=k=>rq(st('kv','readwrite').delete(k));
+const saveT=()=>T?kvSet('timer',T):kvDel('timer');
+const loadS=async()=>{S=(await rq(st('sessions').getAll())).sort((a,b)=>b.start-a.start);await checkAch()};
+function toast(m){const e=document.createElement('div');e.className='ts';e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
+const el=()=>T?T.acc+(T.status==='running'?Date.now()-T.runStart:0):0;
+const sum=(a,b)=>S.filter(s=>s.date>=a&&s.date<=b).reduce((x,s)=>x+s.ms,0);
+const days=(a,b)=>new Set(S.filter(s=>s.date>=a&&s.date<=b).map(s=>s.date)).size;
+const dayMs=d=>sum(d,d);
+const allSubs=()=>[...new Set([...subs,...S.map(s=>s.subject).filter(Boolean)])].sort();
+const dl=()=>'<datalist id="dl">'+allSubs().map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>';
+const pct=(v,g)=>Math.min(100,g?Math.round(v/g*100):0);
+const prog=(v,g,l)=>'<div>'+l+': <b>'+fm(v)+'</b> de '+fm(g)+' ('+pct(v,g)+'%)'+(v>=g?' — meta atingida!':' — faltam '+fm(g-v))+'</div><div class="bar"><i style="width:'+pct(v,g)+'%"></i></div>';
+const bars=a=>{const mx=Math.max(...a.map(x=>x.v),1);return '<div class="ch">'+a.map(x=>'<div title="'+esc(x.l)+': '+fm(x.v)+'"><b style="height:'+Math.round(x.v/mx*90)+'%"></b>'+esc(x.l)+'</div>').join('')+'</div>'};
+function modal(h){$('#ov').innerHTML=h?'<div class="ov"><div class="md">'+h+'</div></div>':''}
+function ask(msg,yes,back){cb=yes;cbBack=back;modal('<p>'+msg+'</p><div class="row"><button class="bt" data-a="no">Cancelar</button><button class="bt dng" data-a="yes">Confirmar</button></div>')}
+const tabs={home:'Início',prog:'Progresso',est:'Estudos',mus:'Música',cfg:'Ajustes'};
+const views={
+home(){const s=T?T.status:'idle',lab={idle:'Parado',running:'Em andamento',paused:'Pausado'}[s],t=ymd(Date.now());
+ const b={idle:'<button class="bt pri" data-a="start">Iniciar</button>',running:'<button class="bt" data-a="pause">Pausar</button><button class="bt pri" data-a="end">Encerrar</button><button class="bt dng" data-a="reset">Restaurar</button>',paused:'<button class="bt pri" data-a="resume">Retomar</button><button class="bt" data-a="end">Encerrar</button><button class="bt dng" data-a="reset">Restaurar</button>'}[s];
+ return '<div class="card '+s+'"><div style="text-align:center"><span class="pill">'+lab+'</span></div><div class="clock" id="clk">'+hms(el())+'</div><div class="row">'+b+'</div>'+(pipOK?'<div class="row" style="margin-top:6px"><button class="bt" data-a="pip">⧉ Painel flutuante</button></div>':'<div class="k" style="text-align:center;margin-top:8px">Painel flutuante: use Chrome ou Edge (v116+) no computador.</div>')+'<label for="subj">O que você vai estudar? (opcional)</label><input id="subj" list="dl" placeholder="Ex.: Python" value="'+esc(T?T.subject:'')+'">'+dl()+'</div><div class="card"><h2>Hoje</h2>'+prog(dayMs(t),goals.d*6e4,'Estudado')+'<div class="k">Só sessões agregadas contam.</div></div>'},
+ov(){const t=ymd(Date.now()),ws=wkStart(t),ms=t.slice(0,7)+'-01',tot=S.reduce((x,s)=>x+s.ms,0),n=new Set(S.map(s=>s.date)).size,wk=[];
+ for(let i=7;i>=0;i--){const a=addD(ws,-7*i);wk.push({l:a.slice(8)+'/'+a.slice(5,7),v:sum(a,addD(a,6))})}
+ return '<div class="grid">'+[['Hoje',fm(dayMs(t))],['Esta semana',fm(sum(ws,t))],['Este mês',fm(sum(ms,t))],['Total geral',fm(tot)],['Média por dia estudado',n?fm(tot/n):'—'],['Dias estudados',n]].map(x=>'<div class="card"><div class="k">'+x[0]+'</div><div class="v">'+x[1]+'</div></div>').join('')+'</div><div class="card"><h2>Horas por semana</h2>'+bars(wk)+'</div>'},
+hist(){return '<div class="card"><div class="grid"><div><label>Buscar</label><input data-f="q" value="'+esc(F.q)+'" placeholder="assunto ou observação"></div><div><label>Assunto</label><select data-f="s"><option value="">Todos</option>'+allSubs().map(s=>'<option'+(F.s==s?' selected':'')+'>'+esc(s)+'</option>').join('')+'</select></div><div><label>De</label><input type="date" data-f="a" value="'+F.a+'"></div><div><label>Até</label><input type="date" data-f="b" value="'+F.b+'"></div></div></div><div class="card" id="list">'+histList()+'</div>'},
+subj(){const m={};S.forEach(s=>{const k=s.subject||'Sem assunto';(m[k]=m[k]||{ms:0,n:0,d:''}).ms+=s.ms;m[k].n++;if(s.date>m[k].d)m[k].d=s.date});const tot=S.reduce((x,s)=>x+s.ms,0),t=ymd(Date.now()),ws=wkStart(t),ms=t.slice(0,7)+'-01';
+ const e=Object.entries(m).sort((a,b)=>b[1].ms-a[1].ms);if(!e.length)return '<div class="card em">Nenhuma sessão agregada ainda. Estude e agregue sua primeira sessão.</div>';
+ return '<div class="card"><h2>Distribuição do tempo</h2><div class="k">Cada sessão pertence a um único assunto, então nenhuma hora é contada duas vezes.</div>'+e.map(([k,v])=>{const w=S.filter(s=>(s.subject||'Sem assunto')==k);const f=a=>w.filter(s=>s.date>=a).reduce((x,s)=>x+s.ms,0);return '<div class="it"><div style="flex:1"><b>'+esc(k)+'</b> <span class="k">'+v.n+' sessões · última: '+dBR(v.d)+'</span><div class="bar"><i style="width:'+pct(v.ms,tot)+'%"></i></div><span class="k">Semana: '+fm(f(ws))+' · Mês: '+fm(f(ms))+'</span></div><div style="text-align:right"><b>'+fm(v.ms)+'</b><div class="k">'+pct(v.ms,tot)+'%</div></div></div>'}).join('')+'</div>'},
+goal(){const t=ymd(Date.now()),ws=wkStart(t),ms=t.slice(0,7)+'-01',gd=[];for(let i=0;i<7;i++){const d=addD(ws,i);if(d<=t&&dayMs(d)>=goals.d*6e4)gd.push(d)}
+ return '<div class="card"><h2>Suas metas (minutos)</h2><div class="grid"><div><label>Por dia</label><input id="gd" type="number" min="1" value="'+goals.d+'"></div><div><label>Por semana</label><input id="gw" type="number" min="1" value="'+goals.w+'"></div><div><label>Por mês</label><input id="gm" type="number" min="1" value="'+goals.m+'"></div></div><div class="row" style="justify-content:flex-start"><button class="bt pri" data-a="saveg">Salvar metas</button></div></div><div class="card"><h2>Progresso</h2>'+prog(dayMs(t),goals.d*6e4,'Hoje')+prog(sum(ws,t),goals.w*6e4,'Semana')+prog(sum(ms,t),goals.m*6e4,'Mês')+'</div><div class="card"><h2>Consistência</h2><p>Você estudou em '+days(addD(t,-6),t)+' dos últimos 7 dias.</p><p>Meta diária atingida em '+gd.length+' dia(s) nesta semana.</p></div>'},
+cfg(){return '<div class="card"><h2>Seus dados</h2><p class="k">Tudo fica salvo neste navegador (IndexedDB). Para guardar uma cópia ou usar em outro dispositivo, exporte um arquivo.</p><div class="row" style="justify-content:flex-start"><button class="bt" data-a="exp">Exportar JSON</button><button class="bt" data-a="bkp">Exportar materiais (ZIP)</button><button class="bt dng" data-a="wipe">Apagar todos os dados</button></div></div><div class="card"><h2>Tema</h2><select id="th"><option value="">Automático</option><option value="light">Claro</option><option value="dark">Escuro</option></select></div>'}};
+function histList(){const q=F.q.toLowerCase(),r=S.filter(s=>(!F.s||s.subject===F.s)&&(!F.a||s.date>=F.a)&&(!F.b||s.date<=F.b)&&(!q||((s.subject||'')+' '+(s.notes||'')).toLowerCase().includes(q)));
+ if(!r.length)return '<div class="em">'+(S.length?'Nenhuma sessão com esses filtros.':'Nenhuma sessão agregada ainda. Inicie o cronômetro na aba Início.')+'</div>';
+ return r.map(s=>'<div class="it"><div><b>'+dBR(s.date)+'</b> · '+fm(s.ms)+' <span class="k">('+hh(s.start)+'–'+hh(s.end)+')</span><br>'+(s.subject?'<span class="tag">'+esc(s.subject)+'</span>':'<span class="k">sem assunto</span>')+(s.notes?'<div class="k">'+esc(s.notes)+'</div>':'')+matChips(s.id)+'</div><div class="row" style="margin:0"><button class="bt" data-a="mat" data-id="'+s.id+'">Materiais'+matN(s.id)+'</button><button class="bt" data-a="edit" data-id="'+s.id+'">Editar</button><button class="bt dng" data-a="del" data-id="'+s.id+'">Excluir</button></div></div>').join('')}
+const TD={home:'Cronômetro e resumo do dia',prog:'Metas, evolução e conquistas',est:'Sessões, assuntos e materiais',mus:'Músicas para focar',cfg:'Tema e backup dos dados'};
+let built=false;
+const secEl=k=>document.querySelector('.pn[data-k="'+k+'"]');
+function fillPanel(k){const s=document.querySelector('.pn[data-k="'+k+'"] .pc');if(!s)return;s.innerHTML=views[k]();if(k=='cfg'){const t=$('#th');if(t)t.value=document.documentElement.dataset.theme||''}}
+function buildPanels(){built=true;$('#main').innerHTML=Object.keys(tabs).map(k=>'<section class="pn'+(k==tab?' open':'')+'" data-k="'+k+'"><button class="ph2" data-a="tab" data-t="'+k+'" aria-expanded="'+(k==tab)+'" aria-controls="pb-'+k+'"><span class="pic">'+svg(NI[k])+'</span><span class="ptx"><b>'+tabs[k]+'</b><span>'+TD[k]+'</span></span><span class="chv">'+svg('<path d="M6 9l6 6 6-6"/>')+'</span></button><div class="pb" id="pb-'+k+'"><div class="pi"><div class="pc"></div></div></div></section>').join('');if(tab)fillPanel(tab)}
+function render(){if(!built)buildPanels();else if(tab)fillPanel(tab)}
+function closePanel(k){const s=secEl(k);if(!s)return;s.classList.remove('open');s.querySelector('.ph2').setAttribute('aria-expanded','false');setTimeout(()=>{if(tab!==k)s.querySelector('.pc').innerHTML=''},320)}
+function togglePanel(k){const old=tab;if(!built)buildPanels();
+ if(old===k){tab=null;closePanel(k);return}
+ if(old)closePanel(old);
+ tab=k;fillPanel(k);const n=secEl(k);n.querySelector('.ph2').setAttribute('aria-expanded','true');void n.offsetHeight;requestAnimationFrame(()=>n.classList.add('open'));
+ setTimeout(()=>{try{n.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}},80)}
+function openEnd(){const pz=T.pausedMs+(T.endTs-T.pauseStart);modal('<h2>Sessão finalizada</h2><p style="margin:4px 0">Tempo cronometrado: <b>'+fmt(T.endTs-T.startTs)+'</b><br>Início '+hh(T.startTs)+' · término '+hh(T.endTs)+'<br>Tempo pausado: <b>'+fmt(pz)+'</b><br>Tempo contabilizável: <b>'+fmt(T.acc)+'</b></p><label>Assunto</label><input id="es" list="dl" value="'+esc(T.subject)+'">'+dl()+'<label>Observações (opcional)</label><textarea id="en" rows="3"></textarea><div class="row"><button class="bt pri" data-a="agg">Agregar ao banco de horas</button><button class="bt dng" data-a="disc">Descartar sessão</button><button class="bt" data-a="back">Voltar ao cronômetro</button></div>')}
+const act={
+tab(d){togglePanel(d.t)},
+async start(){const e=$('#subj'),v=e?e.value.trim():'',n=Date.now();T={id:crypto.randomUUID(),status:'running',startTs:n,runStart:n,acc:0,pausedMs:0,pauseStart:0,subject:v};await saveT();render()},
+async pause(){const n=Date.now();T.acc+=n-T.runStart;T.pauseStart=n;T.status='paused';await saveT();render()},
+async resume(){const n=Date.now();T.pausedMs+=n-T.pauseStart;T.runStart=n;T.status='running';await saveT();render()},
+async end(){const n=Date.now();if(T.status==='running'){T.acc+=n-T.runStart;T.pauseStart=n;T.status='paused'}T.endTs=n;await saveT();render();openEnd()},
+async back(){T.endTs=null;await saveT();modal('');render()},
+reset(){ask('Zerar o cronômetro e descartar a sessão atual?',async()=>{T=null;await saveT();render()})},
+disc(){const s=$('#es').value,nt=$('#en').value;ask('Descartar esta sessão de '+fmt(T.acc)+'? Nenhum tempo será contabilizado.',async()=>{T=null;await saveT();render()},()=>{openEnd();$('#es').value=s;$('#en').value=nt})},
+async agg(d){const g=d&&d.p?pipWin.document:document,sj=g.getElementById(d&&d.p?'ps':'es').value.trim(),nt=g.getElementById(d&&d.p?'pn':'en').value.trim();const r={id:T.id,date:ymd(T.startTs),start:T.startTs,end:T.endTs,ms:T.acc,pausedMs:T.pausedMs+(T.endTs-T.pauseStart),subject:sj,notes:nt,aggAt:Date.now()};
+ try{await rq(st('sessions','readwrite').add(r));toast('Sessão agregada ao banco de horas')}catch(e){toast('Esta sessão já foi agregada')}
+ if(sj&&!subs.includes(sj)){subs.push(sj);await kvSet('subs',subs)}T=null;await saveT();await loadS();modal('');render()},
+no(){const b=cbBack;cb=cbBack=null;modal('');if(b)b()},
+async yes(){const f=cb;cb=cbBack=null;modal('');if(f)await f()},
+edit(d){const s=S.find(x=>x.id==d.id);modal('<h2>Editar sessão</h2><label>Data</label><input id="ed" type="date" value="'+s.date+'"><label>Duração contabilizada (minutos)</label><input id="em" type="number" min="1" value="'+Math.round(s.ms/6e4)+'"><label>Assunto</label><input id="es" list="dl" value="'+esc(s.subject)+'">'+dl()+'<label>Observações</label><textarea id="en" rows="3">'+esc(s.notes)+'</textarea><div class="row"><button class="bt pri" data-a="upd" data-id="'+s.id+'">Salvar</button><button class="bt" data-a="no">Cancelar</button></div>')},
+async upd(d){const s=S.find(x=>x.id==d.id),m=+$('#em').value;if(!(m>0)||!$('#ed').value){toast('Informe data e duração válidas');return}Object.assign(s,{date:$('#ed').value,ms:m*6e4,subject:$('#es').value.trim(),notes:$('#en').value.trim()});await rq(st('sessions','readwrite').put(s));await loadS();modal('');render();toast('Sessão atualizada')},
+del(d){const n=M.filter(m=>m.sid===d.id).length;ask('Excluir esta sessão'+(n?' e seus '+n+' material(is) anexado(s)':'')+'? Os totais serão recalculados.',async()=>{for(const m of M.filter(m=>m.sid===d.id))await mdel(m.id);await rq(st('sessions','readwrite').delete(d.id));await loadS();await loadM();render();toast('Sessão excluída')})},
+async saveg(){const g={d:+$('#gd').value,w:+$('#gw').value,m:+$('#gm').value};if(!(g.d>0&&g.w>0&&g.m>0)){toast('Use valores maiores que zero');return}goals=g;await kvSet('goals',g);render();toast('Metas salvas')},
+exp(){saveFile('studytime-'+ymd(Date.now())+'.json',JSON.stringify({sessions:S,goals,subjects:subs,materials:M.map(({blob,...m})=>m)},null,1))},
+wipe(){ask('Apagar TODAS as sessões, metas e assuntos? Isso não pode ser desfeito.',async()=>{await rq(st('sessions','readwrite').clear());await rq(st('kv','readwrite').clear());await rq(st('materials','readwrite').clear());M=[];S=[];ACHV={};MU.favs=[];MU.cur=null;MU.key='';MU.res=[];muClose();T=null;subs=[];goals={d:60,w:420,m:1800};render();toast('Dados apagados')})}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&act[b.dataset.a])Promise.resolve(act[b.dataset.a](b.dataset)).then(()=>pipRender())});
+document.addEventListener('input',e=>{const f=e.target.dataset.f;if(f){F[f]=e.target.value;$('#list').innerHTML=histList()}});
+document.addEventListener('change',async e=>{const t=e.target;if(t.id==='subj'&&T){T.subject=t.value.trim();saveT()}if(t.id==='ep'){ep=t.value;render()}if(t.id==='mf'){const fs=[...t.files],ok=fs.filter(isH);if(ok.length<fs.length)toast('Somente arquivos HTML são aceitos');pend=ok;matModal()}if(t.id==='th'){if(t.value)document.documentElement.dataset.theme=t.value;else delete document.documentElement.dataset.theme}});
+setInterval(()=>{const c=$('#clk');if(c)c.textContent=hms(el())},250);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&tab=='home'&&!$('#ov').innerHTML)render()});
+/* ===== Painel flutuante (Document Picture-in-Picture): mesma sessão T, mesmas funções act ===== */
+const pipOK='documentPictureInPicture' in window;
+let pipWin=null,pv='compact',pcf=null,pst=null,pipMsg='',lastKey='';
+const PSZ={compact:[300,150],expanded:[340,340],mini:[200,68],end:[340,440],conf:[340,210],none:[300,128]};
+const pb=(a,t,l,c)=>'<button class="bt '+(c||'')+'" data-p="'+a+'" title="'+l+'" aria-label="'+l+'">'+t+'</button>';
+function pipHTML(){const s=T?T.status:'idle',r=s=='running';
+ if(pcf&&T)return '<div class="pp"><p style="margin:0">'+(pcf=='disc'?'Descartar esta sessão de '+fmt(T.acc)+'? Nenhum tempo será contabilizado.':'Zerar o cronômetro e descartar a sessão atual?')+'</p><div class="row">'+pb('cn','Cancelar','Cancelar')+pb('cy','Confirmar','Confirmar','dng')+'</div></div>';
+ if(!T)return '<div class="pp"><div class="k">'+(pipMsg||'Nenhuma sessão ativa.')+'</div>'+pb('start','▶ Iniciar','Iniciar sessão','pri')+'</div>';
+ if(T.endTs)return '<div class="pp"><b>Sessão finalizada</b><div class="k" style="line-height:1.6">Cronometrado: <b>'+fmt(T.endTs-T.startTs)+'</b> ('+hh(T.startTs)+'–'+hh(T.endTs)+')<br>Pausado: <b>'+fmt(T.pausedMs+(T.endTs-T.pauseStart))+'</b><br>Contabilizável: <b>'+fmt(T.acc)+'</b></div><input id="ps" list="dl" placeholder="Assunto" value="'+esc(pst?pst.s:T.subject)+'">'+dl()+'<textarea id="pn" rows="2" placeholder="Observações (opcional)">'+esc(pst?pst.n:'')+'</textarea><div class="row">'+pb('agg','Agregar ao banco de horas','Agregar','pri')+pb('disc','Descartar','Descartar sessão','dng')+pb('back','Voltar','Voltar ao cronômetro')+'</div></div>';
+ const clk='<div class="clock" id="pclk">'+hms(el())+'</div>',pr=pb(r?'pause':'resume',r?'❚❚':'▶',r?'Pausar':'Retomar','pri');
+ if(pv=='mini')return '<div class="pp pm '+s+'">'+clk+pb('m_compact','⤢','Restaurar painel')+'</div>';
+ if(pv=='compact')return '<div class="pp '+s+'">'+clk+'<div class="row">'+pr+pb('end','■','Encerrar sessão')+pb('m_expanded','⤢','Ampliar')+pb('m_mini','–','Minimizar')+'</div></div>';
+ return '<div class="pp px '+s+'"><div style="text-align:center"><span class="pill">'+(r?'Em andamento':'Pausado')+'</span></div>'+clk+'<div class="k" style="text-align:center">Início: '+hh(T.startTs)+'</div><input id="psb" list="dl" placeholder="Assunto (opcional)" value="'+esc(T.subject)+'">'+dl()+'<div class="row">'+pr+pb('end','■ Encerrar','Encerrar sessão')+pb('reset','Restaurar','Restaurar cronômetro','dng')+'</div><div class="row">'+pb('m_compact','⤡ Compacto','Modo compacto')+pb('m_mini','– Minimizar','Minimizar')+'</div></div>'}
+const svg=p=>'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+const I={pause:svg('<path d="M9 5v14M15 5v14"/>'),play:svg('<path d="M7 5l12 7-12 7z"/>'),stop:svg('<rect x="6" y="6" width="12" height="12" rx="2"/>'),exp:svg('<path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/>'),min:svg('<path d="M6 12h12"/>')};
+const _pipHTML=pipHTML;
+pipHTML=function(){if(!T||T.endTs||pcf||pv=='expanded')return _pipHTML();
+ const s=T.status,r=s=='running',clk='<div class="clock" id="pclk">'+hms(el())+'</div>',pr=pb(r?'pause':'resume',r?I.pause:I.play,r?'Pausar':'Retomar','pri ic');
+ if(pv=='mini')return '<div class="pp pm '+s+'">'+clk+pb('m_compact',I.exp,'Restaurar painel','ic')+'</div>';
+ return '<div class="pp '+s+'"><div class="ph"><span class="dot" title="'+(r?'Em andamento':'Pausado')+'"></span><span>StudyTime</span>'+(T.subject?'<span class="sb">'+esc(T.subject)+'</span>':'')+'</div>'+clk+'<div class="row">'+pr+pb('end',I.stop,'Encerrar sessão','ic')+pb('m_expanded',I.exp,'Ampliar','ic')+pb('m_mini',I.min,'Minimizar','ic')+'</div></div>'};
+function pipRender(){if(!pipWin)return;if(!T)pcf=null;const k=T&&T.endTs?'end':pcf?'conf':!T?'none':pv;pipWin.document.body.innerHTML=pipHTML();if(k!==lastKey){lastKey=k;pipFit()}}
+let pipCenter=false;
+function pipFit(){const w=pipWin;if(!w)return;const k=lastKey,tw=(PSZ[k]||PSZ.none)[0];
+ try{w.resizeBy(tw-w.innerWidth,0)}catch(e){}
+ w.requestAnimationFrame(()=>{if(pipWin!==w)return;const p=w.document.querySelector('.pp');if(!p)return;p.style.minHeight='0';const h=Math.min(Math.ceil(p.offsetHeight+12),screen.availHeight-60);p.style.minHeight='';
+  try{w.resizeBy(0,h-w.innerHeight)}catch(e){}
+  if(pipCenter){pipCenter=false;try{w.moveTo(Math.round((screen.availLeft||0)+(screen.availWidth-w.outerWidth)/2),Math.round((screen.availTop||0)+(screen.availHeight-w.outerHeight)/2))}catch(e){}}})}
+function pipLoop(){if(!pipWin)return;const c=pipWin.document.getElementById('pclk');if(c){const t=hms(el());if(c.textContent!==t)c.textContent=t}pipWin.requestAnimationFrame(pipLoop)}
+const pa={async start(){await act.start()},async pause(){await act.pause()},async resume(){await act.resume()},async end(){await act.end()},
+ async back(){pst=null;await act.back()},m_compact(){pv='compact'},m_expanded(){pv='expanded'},m_mini(){pv='mini'},reset(){pcf='reset'},
+ disc(){const d=pipWin.document;pst={s:d.getElementById('ps').value,n:d.getElementById('pn').value};pcf='disc'},cn(){pcf=null},
+ async cy(){pcf=null;pst=null;T=null;await saveT();modal('');render()},
+ async agg(){const id=T.id;await act.agg({p:1});pst=null;pipMsg=S.some(x=>x.id===id)?'Sessão agregada ao banco de horas.':''}};
+act.pip=async()=>{if(pipWin){pipWin.focus();return}try{const w=await documentPictureInPicture.requestWindow({width:300,height:150});pipWin=w;lastKey='';
+ w.document.head.appendChild(document.querySelector('style').cloneNode(true));const th=document.documentElement.dataset.theme;if(th)w.document.documentElement.dataset.theme=th;w.document.title='StudyTime';w.document.body.className='pg';
+ w.document.addEventListener('click',async e=>{const b=e.target.closest('[data-p]');if(!b||!pa[b.dataset.p])return;await pa[b.dataset.p]();pipRender()});
+ w.document.addEventListener('change',e=>{if(e.target.id==='psb'&&T){T.subject=e.target.value.trim();saveT();render()}});
+ w.addEventListener('pagehide',()=>{pipWin=null;lastKey='';if(T)toast('Painel fechado. A sessão continua em andamento.')});
+ pipCenter=true;pipRender();pipLoop()}catch(e){pipWin=null;toast('Não foi possível abrir o painel flutuante')}};
+/* ===== Materiais de estudo (store 'materials' no mesmo IndexedDB; kind permite ZIP no futuro) ===== */
+let M=[],pend=[],msid=null;
+const loadM=async()=>{M=await rq(st('materials').getAll())};
+const matN=id=>{const n=M.filter(m=>m.sid===id).length;return n?' ('+n+')':''};
+const matChips=id=>{const l=M.filter(m=>m.sid===id);return l.length?'<div class="k">Materiais: '+l.slice(0,3).map(m=>esc(m.name)).join(', ')+(l.length>3?' +'+(l.length-3):'')+'</div>':''};
+const fsz=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
+const isH=f=>/\.html?$/i.test(f.name)||f.type==='text/html';
+const mput=r=>new Promise((res,rej)=>{const t=db.transaction('materials','readwrite');t.objectStore('materials').put(r);t.oncomplete=res;t.onabort=()=>rej(t.error||new Error('abort'))});
+const mdel=id=>new Promise((res,rej)=>{const t=db.transaction('materials','readwrite');t.objectStore('materials').delete(id);t.oncomplete=res;t.onabort=()=>rej(t.error)});
+const quota=e=>e&&(e.name==='QuotaExceededError'||/quota/i.test(e.message||''));
+async function saveFile(name,data){try{const d=window.claude&&await claude.use('downloads');if(d){await d.save({filename:name,data});return}}catch(e){if(e&&e.code==='declined')return}
+ const u=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),3000)}
+function matModal(){const s=S.find(x=>x.id===msid);if(!s){modal('');return}
+ const l=M.filter(m=>m.sid===msid).sort((a,b)=>a.addedAt-b.addedAt);
+ modal('<h2>Materiais de estudo</h2><div class="k" style="margin-bottom:8px">'+dBR(s.date)+' · '+fm(s.ms)+(s.subject?' · '+esc(s.subject):'')+'</div>'+
+ (l.length?l.map(m=>'<div class="it" style="flex-direction:column;gap:6px"><div><b style="word-break:break-all">'+esc(m.name)+'</b> <span class="k">'+fsz(m.size)+'</span>'+(m.desc?'<div class="k">'+esc(m.desc)+'</div>':'')+'</div><div class="row" style="justify-content:flex-start;margin:0">'+[['matview','Abrir'],['matdl','Baixar'],['matrep','Substituir'],['matdel','Remover']].map(x=>'<button class="bt'+(x[0]=='matdel'?' dng':'')+'" data-a="'+x[0]+'" data-id="'+m.id+'">'+x[1]+'</button>').join('')+'</div></div>').join(''):'<div class="em">Nenhum material anexado a esta sessão.</div>')+
+ '<label>Adicionar arquivos HTML</label><input id="mf" type="file" accept=".html,.htm,text/html" multiple>'+
+ (pend.length?'<div class="card" style="margin:10px 0 0">'+pend.map((f,i)=>'<div style="margin-bottom:8px"><b style="word-break:break-all">'+esc(f.name)+'</b> <span class="k">'+fsz(f.size)+'</span><input id="pd'+i+'" placeholder="Descrição (opcional)"></div>').join('')+'<button class="bt pri" data-a="matsave">Armazenar '+pend.length+' arquivo(s)</button></div>':'')+
+ '<div class="row"><button class="bt" data-a="matclose">Fechar</button></div>')}
+act.mat=d=>{msid=d.id;pend=[];matModal()};
+act.matclose=()=>{msid=null;pend=[];modal('')};
+act.matback=()=>matModal();
+act.matsave=async()=>{const fs=pend.slice();let n=0;
+ for(let i=0;i<fs.length;i++){const f=fs[i],dsc=(document.getElementById('pd'+i)||{}).value||'';
+  try{await mput({id:crypto.randomUUID(),sid:msid,kind:'html',name:f.name,size:f.size,type:f.type||'text/html',desc:dsc.trim(),addedAt:Date.now(),blob:f});n++}
+  catch(e){toast(quota(e)?'Espaço insuficiente no navegador. '+n+' de '+fs.length+' arquivo(s) armazenado(s).':'Falha ao armazenar '+f.name);break}}
+ pend=pend.slice(n);await loadM();matModal();render();if(n&&n===fs.length)toast(n+' material(is) armazenado(s)')};
+act.matview=async d=>{const m=M.find(x=>x.id===d.id);if(!m)return;let t;try{t=await m.blob.text()}catch(e){toast('Não foi possível ler o arquivo');return}
+ modal('<h2 style="word-break:break-all">'+esc(m.name)+'</h2><div class="k" style="margin-bottom:8px">Visualização isolada: scripts desativados. Imagens, estilos e links relativos do arquivo original podem não carregar.</div><iframe id="mv" sandbox="" referrerpolicy="no-referrer" style="width:100%;height:60vh;border:1px solid var(--b);border-radius:8px;background:#fff"></iframe><div class="row"><button class="bt" data-a="matback">Voltar</button></div>');
+ document.querySelector('#ov .md').style.maxWidth='900px';$('#mv').srcdoc=t};
+act.matdl=async d=>{const m=M.find(x=>x.id===d.id);if(m)await saveFile(/\.html$/i.test(m.name)?m.name:m.name.replace(/\.[^.]*$/,'')+'.html',m.blob)};
+act.matrep=d=>{const m=M.find(x=>x.id===d.id);if(!m)return;const i=document.createElement('input');i.type='file';i.accept='.html,.htm,text/html';
+ i.onchange=async()=>{const f=i.files[0];if(!f)return;if(!isH(f)){toast('Somente arquivos HTML são aceitos');return}
+  try{await mput({...m,name:f.name,size:f.size,type:f.type||'text/html',blob:f,replacedAt:Date.now()});await loadM();matModal();render();toast('Material substituído')}catch(e){toast(quota(e)?'Espaço insuficiente no navegador.':'Falha ao substituir o material')}};i.click()};
+act.matdel=d=>{const m=M.find(x=>x.id===d.id);if(!m)return;ask('Remover o material "'+esc(m.name)+'"? A sessão e as horas contabilizadas não serão alteradas.',async()=>{await mdel(m.id);await loadM();matModal();render();toast('Material removido')},()=>matModal())};
+act.bkp=async()=>{if(!M.length){toast('Nenhum material para exportar');return}if(typeof JSZip==='undefined'){toast('Biblioteca de ZIP indisponível. Baixe os arquivos pelo histórico.');return}
+ toast('Gerando ZIP...');const z=new JSZip(),idx=[],used={};
+ for(const m of M){const s=S.find(x=>x.id===m.sid)||{},dir='materiais/'+(s.date||'sem-sessao')+'_'+((s.subject||'sem-assunto').replace(/[^\w\-]+/g,'_'))+'_'+m.sid.slice(0,8)+'/',nm=m.name.replace(/[\\/:*?"<>|]/g,'_');let k=dir+nm,i=1;while(used[k])k=dir+(i++)+'_'+nm;used[k]=1;z.file(k,m.blob);idx.push({arquivo:k,nomeOriginal:m.name,tamanho:m.size,descricao:m.desc,sessaoId:m.sid,sessaoData:s.date,assunto:s.subject,tipo:m.kind})}
+ z.file('indice.json',JSON.stringify(idx,null,1));await saveFile('studytime-materiais-'+ymd(Date.now())+'.zip',await z.generateAsync({type:'blob'}))};
+/* ===== Minha evolução, Conquistas e Calendário: tudo derivado de S; só 'ach' fica salvo em kv. Regra de meia-noite: a sessão conta inteira no dia em que começou (s.date) ===== */
+let ep='30',calM=ymd(Date.now()).slice(0,7),ACHV={};
+const mEnd=s=>{const y=+s.slice(0,4),m=+s.slice(5,7);return s.slice(0,7)+'-'+p2(new Date(y,m,0).getDate())};
+const CHK='<path d="M5 12l5 5L20 7"/>',LCK='<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>';
+const asc=()=>[...S].sort((a,b)=>a.start-b.start);
+const totH=()=>S.reduce((x,s)=>x+s.ms,0)/36e5;
+function winBest(){const ds=[...new Set(S.map(s=>s.date))].sort();let best=0,when=null;ds.forEach(d=>{const a=addD(d,-6),c=ds.filter(x=>x>=a&&x<=d).length;if(c>best)best=c;if(c>=5&&!when)when=d});return{best,when}}
+const ACH=[{id:'first',t:'Primeiros passos',d:'Agregar a primeira sessão',tg:1,v:()=>S.length,txt:v=>Math.min(v,1)+' de 1 sessão',rem:()=>'Agregue sua primeira sessão',w:()=>asc()[0]&&asc()[0].date},
+ ...[[1,'Uma hora de dedicação'],[5,'Cinco horas acumuladas'],[10,'Dez horas acumuladas'],[25,'Vinte e cinco horas acumuladas'],[50,'Cinquenta horas acumuladas'],[100,'Cem horas acumuladas']].map(([h,t])=>({id:'h'+h,t,d:'Acumular '+h+(h==1?' hora':' horas')+' de estudo agregado',tg:h,v:totH,txt:v=>fm(Math.min(v,h)*36e5)+' de '+h+'h',rem:v=>'Faltam '+fm((h-v)*36e5),w:()=>{let c=0;for(const s of asc()){c+=s.ms;if(c>=h*36e5-1)return s.date}}})),
+ {id:'rot',t:'Rotina consistente',d:'Estudar em 5 dias diferentes dentro de 7 dias',tg:5,v:()=>winBest().best,txt:v=>Math.min(v,5)+' de 5 dias na melhor janela de 7 dias',rem:v=>'Faltam '+(5-v)+' dia(s) de estudo numa janela de 7 dias',w:()=>winBest().when}];
+async function checkAch(){try{const A=(await kvGet('ach'))||{},nu=[];for(const a of ACH){if(!A[a.id]&&a.v()>=a.tg-1e-9){A[a.id]={date:a.w()||ymd(Date.now()),at:Date.now()};nu.push(a.t)}}
+ if(nu.length){await kvSet('ach',A);setTimeout(()=>toast(nu.length==1?'Conquista desbloqueada: '+nu[0]:nu.length+' conquistas desbloqueadas: '+nu.join(', ')),2700)}ACHV=A}catch(e){}}
+function evoRange(){const t=ymd(Date.now());if(ep=='all')return[S.reduce((x,s)=>s.date<x?s.date:x,t),t];if(ep=='mes')return[t.slice(0,7)+'-01',t];return[addD(t,-(+ep-1)),t]}
+const cm2=(c,p,pf,x)=>!pf?'Ainda não há dados '+x+' para comparar.':Math.abs(c-p)<6e4?'Você estudou o mesmo tempo que no período equivalente '+x+'.':c>p?'Você estudou '+fm(c-p)+' a mais do que no período equivalente '+x+'.':'Seu tempo de estudo diminuiu '+fm(p-c)+' em relação ao período equivalente '+x+'.';
+function evoCmp(){const t=ymd(Date.now()),ws=wkStart(t),i=(new Date(t+'T12:00:00').getDay()+6)%7,pw=addD(ws,-7),o=[];
+ if(i<6)o.push('<span class="k">Semana em andamento (dia '+(i+1)+' de 7): comparada com os mesmos dias da semana anterior.</span>');
+ o.push(cm2(sum(ws,t),sum(pw,addD(pw,i)),sum(pw,addD(pw,6)),'da semana anterior'));
+ const dw=days(ws,t);o.push(dw?'Você estudou em '+dw+' dia(s) diferente(s) nesta semana.':'Nenhuma sessão agregada nesta semana ainda.');
+ const ms=t.slice(0,7)+'-01',dm=+t.slice(8),nd=+mEnd(ms).slice(8),y=+t.slice(0,4),m=+t.slice(5,7),pm=ymd(new Date(y,m-2,1)),pd=Math.min(dm,+mEnd(pm).slice(8)),pe=pm.slice(0,7)+'-'+p2(pd);
+ if(dm<nd)o.push('<span class="k">Mês em andamento (dia '+dm+' de '+nd+'): comparado com os primeiros '+pd+' dias do mês anterior.</span>');
+ o.push(cm2(sum(ms,t),sum(pm,pe),sum(pm,mEnd(pm)),'do mês anterior'));
+ const sj={};S.filter(s=>s.date>=ms&&s.date<=t&&s.subject).forEach(s=>sj[s.subject]=(sj[s.subject]||0)+s.ms);const top=Object.entries(sj).sort((a,b)=>b[1]-a[1])[0];
+ if(top)o.push(esc(top[0])+' foi o assunto ao qual você dedicou mais tempo neste mês ('+fm(top[1])+').');
+ return o.map(x=>'<p style="margin:6px 0">'+x+'</p>').join('')}
+function calHTML(){const y=+calM.slice(0,4),m=+calM.slice(5,7),first=new Date(y,m-1,1),off=(first.getDay()+6)%7,nd=new Date(y,m,0).getDate(),t=ymd(Date.now());let c='';
+ for(let i=0;i<off;i++)c+='<div class="cd e"></div>';
+ for(let d=1;d<=nd;d++){const ds=calM+'-'+p2(d),v=dayMs(ds);c+='<div class="cd'+(v?' on':'')+(ds==t?' td':'')+'" title="'+dBR(ds)+(v?' · '+fm(v):'')+'">'+d+'</div>'}
+ return '<div class="row" style="justify-content:space-between;align-items:center;margin:0 0 10px"><button class="bt" data-a="calp" aria-label="Mês anterior">‹</button><b>'+first.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'</b><button class="bt" data-a="caln" aria-label="Próximo mês"'+(calM>=t.slice(0,7)?' disabled':'')+'>›</button></div><div class="cal">'+['S','T','Q','Q','S','S','D'].map(x=>'<div class="k" style="text-align:center">'+x+'</div>').join('')+c+'</div><p class="k">'+days(calM+'-01',mEnd(calM+'-01'))+' dia(s) com estudo neste mês. Sessões que passam da meia-noite contam inteiras no dia em que começaram. Estudar todo dia não é obrigatório.</p>'}
+views.evo=function(){const t=ymd(Date.now()),ws=wkStart(t),ms=t.slice(0,7)+'-01',[a,b]=evoRange(),inR=S.filter(s=>s.date>=a&&s.date<=b),mx=S.reduce((x,s)=>s.ms>x.ms?s:x,{ms:0}),tot=S.reduce((x,s)=>x+s.ms,0);
+ const n=Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)+1,ch=[];
+ if(n<=31)for(let i=0;i<n;i++){const d=addD(a,i);ch.push({l:d.slice(8),v:dayMs(d)})}
+ else for(let w=wkStart(a);w<=b;w=addD(w,7)){const x=w<a?a:w,y=addD(w,6)>b?b:addD(w,6);ch.push({l:w.slice(8)+'/'+w.slice(5,7),v:sum(x,y)})}
+ const sj={};inR.forEach(s=>{const k=s.subject||'Sem assunto';sj[k]=(sj[k]||0)+s.ms});const pt=inR.reduce((x,s)=>x+s.ms,0),se=Object.entries(sj).sort((x,y)=>y[1]-x[1]);
+ return '<div class="grid">'+[['Dias estudados',days(a,b)+' no período'],['Maior sessão',mx.ms?fm(mx.ms)+' ('+dBR(mx.date)+')':'—']].map(x=>'<div class="card"><div class="k">'+x[0]+'</div><div class="v" style="font-size:20px">'+x[1]+'</div></div>').join('')+'</div>'+
+ '<div class="card"><h2>Período</h2><select id="ep">'+[['7','Últimos 7 dias'],['30','Últimos 30 dias'],['90','Últimos 90 dias'],['mes','Este mês'],['all','Todo o período']].map(x=>'<option value="'+x[0]+'"'+(x[0]==ep?' selected':'')+'>'+x[1]+'</option>').join('')+'</select><div class="k" style="margin-top:6px">'+dBR(a)+' a '+dBR(b)+(n>31?' · barras semanais':' · barras diárias')+'</div></div>'+
+ '<div class="card"><h2>Horas estudadas</h2>'+(inR.length?bars(ch):'<div class="em">Nenhuma sessão agregada neste período.</div>')+'</div>'+
+ '<div class="card"><h2>Comparações</h2>'+evoCmp()+'</div>'+
+ '<div class="card"><h2>Distribuição por assunto</h2>'+(se.length?se.map(([k,v])=>'<div class="it"><div style="flex:1"><b>'+esc(k)+'</b><div class="bar"><i style="width:'+pct(v,pt)+'%"></i></div></div><div style="text-align:right"><b>'+fm(v)+'</b><div class="k">'+pct(v,pt)+'%</div></div></div>').join(''):'<div class="em">Nenhuma sessão agregada neste período.</div>')+'</div>'+
+ '<div class="card"><h2>Calendário de consistência</h2>'+calHTML()+'</div>'};
+views.ach=function(){const n=ACH.filter(a=>ACHV[a.id]).length;
+ return '<div class="card"><h2>Conquistas</h2><div class="k">'+n+' de '+ACH.length+' desbloqueadas. Contam apenas sessões agregadas. Conquistas já desbloqueadas permanecem mesmo se o histórico for editado ou excluído.</div></div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">'+ACH.map(a=>{const u=ACHV[a.id],v=a.v(),p=Math.min(100,Math.round(v/a.tg*100));
+  return '<div class="ac'+(u?' ok':'')+'"><div style="display:flex;gap:10px;align-items:center"><span class="bg">'+svg(u?CHK:LCK)+'</span><b>'+a.t+'</b></div><div class="k">'+a.d+'</div><div class="bar"><i style="width:'+(u?100:p)+'%"></i></div><div class="k">'+(u?'Desbloqueada em '+dBR(u.date)+(v<a.tg-1e-9?'. Progresso atual: '+a.txt(v):''):a.txt(v)+' · '+a.rem(v))+'</div></div>'}).join('')+'</div>'};
+act.calp=()=>{calM=ymd(new Date(+calM.slice(0,4),+calM.slice(5,7)-2,1)).slice(0,7);render()};
+act.caln=()=>{calM=ymd(new Date(+calM.slice(0,4),+calM.slice(5,7),1)).slice(0,7);render()};
+/* ===== Cérebro 3D: Three.js r128 (cdnjs) carregado sob demanda; malha procedural, sem modelo externo ===== */
+const BR={el:null,run:false,ready:null,fail:false,hi:0};
+const hs=(x,y,z)=>{const h=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453;return h-Math.floor(h)};
+function vn(x,y,z){const ix=Math.floor(x),iy=Math.floor(y),iz=Math.floor(z),u=x-ix,v=y-iy,w=z-iz,a=u*u*(3-2*u),b=v*v*(3-2*v),c=w*w*(3-2*w),L=(p,q,t)=>p+(q-p)*t;
+ return L(L(L(hs(ix,iy,iz),hs(ix+1,iy,iz),a),L(hs(ix,iy+1,iz),hs(ix+1,iy+1,iz),a),b),L(L(hs(ix,iy,iz+1),hs(ix+1,iy,iz+1),a),L(hs(ix,iy+1,iz+1),hs(ix+1,iy+1,iz+1),a),b),c)*2-1}
+const sm=(a,b,x)=>{x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)};
+function hemi(TH,k){const g=new TH.SphereGeometry(1,150,110),P=g.attributes.position,C=new Float32Array(P.count*3),o=k*7.3;
+ for(let i=0;i<P.count;i++){const nx=P.getX(i),ny=P.getY(i),nz=P.getZ(i),w1=vn(nx*1.4+o,ny*1.4,nz*1.4),w2=vn(nx*1.4+o+9,ny*1.4+9,nz*1.4),w3=vn(nx*1.4+o,ny*1.4+17,nz*1.4+5);
+  const g1=Math.abs(vn(nx*3.1+w1*1.1+o,ny*3.1+w2*1.1,nz*3.1+w3*1.1)),g2=Math.abs(vn(nx*6.5+w2*.8+o,ny*6.5+w3*.8,nz*6.5+w1*.8+4)),g3=Math.abs(vn(nx*13+w3*.6+o,ny*13+w1*.6,nz*13+w2*.6+8));
+  const s1=1-sm(0,.085,g1),s2=1-sm(0,.12,g2),s3=1-sm(0,.16,g3);
+  const fis=(1-sm(0,.05,Math.abs(ny-(.02-.2*nz))))*sm(.2,.55,nx)*sm(-.6,-.35,nz)*(1-sm(.5,.7,nz)),cen=(1-sm(0,.04,Math.abs(nz-(.12-.18*ny-.08*nx))))*sm(.35,.85,ny);
+  const r=1-(.075*s1+.035*s2*(1-s1)+.014*s3*(1-s1)*(1-s2)+.09*fis+.07*cen);
+  const fr=sm(.2,1,nz),oc=sm(-.5,-1,nz),tp=sm(.2,-.8,ny)*sm(-.6,.1,nz)*(1-sm(.5,.9,nz));
+  P.setXYZ(i,Math.max(.035,.45+nx*r*.45)*(1-.16*fr-.08*oc)*(1+.06*tp),ny*r*(ny<0?.42+.1*tp:.6),nz*r*1.1);
+  const t=Math.min(1,s1+.75*s2*(1-s1)+.4*s3*(1-s1)+1.2*fis+cen),v=.04*w1,lit=.82+.18*ny;
+  C[i*3]=(.84*(1-t)+.04*t+v)*lit;C[i*3+1]=(.92*(1-t)+.1*t+v)*lit;C[i*3+2]=(.96*(1-t)+.2*t+v)*Math.min(1,lit+.1)}
+ g.setAttribute('color',new TH.BufferAttribute(C,3));g.computeVertexNormals();
+ const Nm=g.attributes.normal,mp=new Map(),key=i=>P.getX(i).toFixed(4)+','+P.getY(i).toFixed(4)+','+P.getZ(i).toFixed(4);
+ for(let i=0;i<P.count;i++){const q=key(i),a=mp.get(q)||[0,0,0];a[0]+=Nm.getX(i);a[1]+=Nm.getY(i);a[2]+=Nm.getZ(i);mp.set(q,a)}
+ for(let i=0;i<P.count;i++){const a=mp.get(key(i)),l=Math.hypot(a[0],a[1],a[2])||1;Nm.setXYZ(i,a[0]/l,a[1]/l,a[2]/l)}
+ return g}
+function cereb(TH){const g=new TH.SphereGeometry(1,64,48),P=g.attributes.position,C=new Float32Array(P.count*3);
+ for(let i=0;i<P.count;i++){const x=P.getX(i),y=P.getY(i),z=P.getZ(i),r=1-.05*(.5+.5*Math.sin(y*38+vn(x*2,y*2,z*2)*2)),t=.5+.5*Math.sin(y*38);P.setXYZ(i,x*r*.55,y*r*.26-.5,z*r*.38-.78);C[i*3]=.6*(.6+.4*t);C[i*3+1]=.72*(.6+.4*t);C[i*3+2]=.78*(.6+.4*t)}
+ g.setAttribute('color',new TH.BufferAttribute(C,3));g.computeVertexNormals();return g}
+function brainInit(TH){const W=BR.el.clientWidth||320,H=BR.el.clientHeight||230,R=new TH.WebGLRenderer({antialias:true,alpha:true});R.setPixelRatio(Math.min(window.devicePixelRatio||1,2));R.setSize(W,H);R.domElement.style.display='block';BR.el.appendChild(R.domElement);BR.w=W;BR.h=H;
+ const sc=new TH.Scene(),cam=new TH.PerspectiveCamera(32,W/H,.1,50),grp=new TH.Group(),mat=new TH.MeshPhysicalMaterial({vertexColors:true,roughness:.5,metalness:.05,clearcoat:.4,clearcoatRoughness:.35,emissive:0x0e7490,emissiveIntensity:.05});cam.position.set(0,.1,5.4);
+ const h1=new TH.Mesh(hemi(TH,0),mat),h2=new TH.Mesh(hemi(TH,1),mat);h2.scale.x=-1;grp.add(h1,h2,new TH.Mesh(cereb(TH),mat));
+ const shM=new TH.ShaderMaterial({transparent:true,depthWrite:false,blending:TH.AdditiveBlending,vertexShader:'varying vec3 vN;varying vec3 vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}',fragmentShader:'varying vec3 vN;varying vec3 vV;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(vV))),2.6);gl_FragColor=vec4(vec3(0.18,0.83,0.75)*f*0.85,f*0.85);}'});
+ [h1,h2].forEach(m=>{const s=new TH.Mesh(m.geometry,shM);s.scale.copy(m.scale).multiplyScalar(1.035);grp.add(s)});
+ const stem=new TH.Mesh(new TH.CylinderGeometry(.13,.09,.55,20),new TH.MeshStandardMaterial({color:0x6f8ea0,roughness:.6}));stem.position.set(0,-.8,-.28);stem.rotation.x=.35;grp.add(stem);sc.add(grp);
+ const pts=[];[[h1,1],[h2,-1]].forEach(([m,s])=>{const P=m.geometry.attributes.position,N=m.geometry.attributes.normal,Cc=m.geometry.attributes.color;for(let q=0;q<110;q++){const i=Math.floor(Math.random()*P.count);if(Cc.getX(i)<.6)continue;pts.push(s*(P.getX(i)+N.getX(i)*.02),P.getY(i)+N.getY(i)*.02,P.getZ(i)+N.getZ(i)*.02)}});
+ const n=pts.length/3,ph=Array.from({length:n},()=>Math.random()*10),pg=new TH.BufferGeometry();pg.setAttribute('position',new TH.Float32BufferAttribute(pts,3));pg.setAttribute('color',new TH.Float32BufferAttribute(new Float32Array(n*3),3));
+ const cv=document.createElement('canvas');cv.width=cv.height=32;const cx=cv.getContext('2d'),gr=cx.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(1,'rgba(255,255,255,0)');cx.fillStyle=gr;cx.fillRect(0,0,32,32);
+ grp.add(new TH.Points(pg,new TH.PointsMaterial({size:.07,map:new TH.CanvasTexture(cv),vertexColors:true,transparent:true,depthWrite:false,blending:TH.AdditiveBlending})));
+ const sg=[];for(let i=0;i<n&&sg.length<360;i++)for(let j=i+1;j<n;j++){const a=i*3,b=j*3,d=(pts[a]-pts[b])**2+(pts[a+1]-pts[b+1])**2+(pts[a+2]-pts[b+2])**2;if(d<.07)sg.push(pts[a],pts[a+1],pts[a+2],pts[b],pts[b+1],pts[b+2])}
+ const lg=new TH.BufferGeometry();lg.setAttribute('position',new TH.Float32BufferAttribute(sg,3));const lm=new TH.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:.15,depthWrite:false,blending:TH.AdditiveBlending});grp.add(new TH.LineSegments(lg,lm));
+ const key=new TH.DirectionalLight(0x5eead4,1.1),fill=new TH.DirectionalLight(0x38bdf8,.8),back=new TH.PointLight(0x1d4ed8,1.5,14),rim=new TH.DirectionalLight(0xbae6fd,.35);key.position.set(3,2,4);fill.position.set(-4,1,2);back.position.set(0,-2,-3);rim.position.set(0,4,-2);sc.add(new TH.AmbientLight(0x1b3a52,.9),key,fill,back,rim);
+ const col=pg.attributes.color,t0=performance.now();BR.reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ BR.draw=()=>{const t=BR.reduce?0:(performance.now()-t0)/1000,p=.5+.5*Math.sin(t*1.1),w=BR.el.clientWidth,h=BR.el.clientHeight;
+  if(w&&h&&(w!==BR.w||h!==BR.h)){BR.w=w;BR.h=h;R.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()}
+  grp.rotation.y=-Math.PI/2+.35+Math.sin(t*.22)*.55;grp.rotation.x=-.1+Math.sin(t*.17)*.06;grp.position.y=Math.sin(t*.6)*.05;
+  mat.emissiveIntensity=.04+.07*p;key.intensity=1.05+.15*Math.sin(t*.7);back.intensity=1.4+.4*Math.sin(t*.5+1);lm.opacity=.08+.14*p;
+  for(let i=0;i<n;i++){const k=.12+.88*Math.pow(.5+.5*Math.sin(t*(.8+ph[i]%1)+ph[i]*6.3),4);col.setXYZ(i,.2*k,.9*k,.95*k)}col.needsUpdate=true;R.render(sc,cam)}}
+function brainLoop(){if(!BR.draw||BR.run)return;BR.run=true;const f=()=>{if(!BR.el.isConnected||BR.vis===false){BR.run=false;return}BR.draw();if(BR.reduce){BR.run=false;return}requestAnimationFrame(f)};requestAnimationFrame(f)}
+function mountBrain(){const h=$('#brain');if(!h||BR.fail)return;if(!BR.el){BR.el=document.createElement('div');BR.el.style.cssText='position:absolute;inset:0'}h.appendChild(BR.el);if(window.IntersectionObserver&&!BR.io){BR.io=new IntersectionObserver(es=>{BR.vis=es[0].isIntersecting;if(BR.vis)brainLoop()});BR.io.observe(h)}
+ if(BR.draw){brainLoop();return}
+ if(!BR.ready)BR.ready=new Promise((res,rej)=>{if(window.THREE)return res();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)}).then(()=>{brainInit(window.THREE);brainLoop()}).catch(()=>{BR.fail=true;if(BR.el)BR.el.remove()})}
+/* ===== Módulo de música: YouTube IFrame Player API (player sempre visível no dock); independente do cronômetro T ===== */
+const MU={key:'',res:[],serr:'',busy:false,p:null,ready:false,api:null,vol:60,cur:null,favs:[],title:'',playing:false,err:'',draft:'',loaded:false,pl:false,sig:0};
+I.next=svg('<path d="M6 5l9 7-9 7z"/><path d="M19 5v14"/>');I.prev=svg('<path d="M18 5l-9 7 9 7z"/><path d="M5 5v14"/>');
+const ID11=/^[A-Za-z0-9_-]{11}$/,IDPL=/^[A-Za-z0-9_-]{10,}$/;
+function parseYT(s){s=(s||'').trim();if(ID11.test(s))return{type:'video',id:s,url:'https://www.youtube.com/watch?v='+s};
+ let u;try{u=new URL(/^https?:[/][/]/i.test(s)?s:'https://'+s)}catch(e){return null}
+ const h=u.hostname.replace(/^(www|m|music)[.]/,'');if(!['youtube.com','youtu.be','youtube-nocookie.com'].includes(h))return null;
+ const l=u.searchParams.get('list');if(l&&IDPL.test(l))return{type:'playlist',id:l,url:'https://www.youtube.com/playlist?list='+l};
+ const v=h=='youtu.be'?u.pathname.slice(1).split('/')[0]:u.searchParams.get('v')||((u.pathname.match(/^[/](?:embed|shorts|live|v)[/]([A-Za-z0-9_-]{11})/)||[])[1]);
+ return v&&ID11.test(v)?{type:'video',id:v,url:'https://www.youtube.com/watch?v='+v}:null}
+const MERR={2:'O link contém um identificador inválido.',5:'O player do YouTube encontrou um erro. Tente novamente.',100:'Vídeo indisponível: foi removido ou está privado.',101:'O dono do vídeo não permite reprodução incorporada em outros sites.',150:'O dono do vídeo não permite reprodução incorporada em outros sites.',153:'O YouTube recusou a incorporação (erro 153). Abra o StudyTime por um endereço http(s), não direto pelo arquivo.'};
+async function muInit(){try{MU.key=(await kvGet('ytkey'))||'';const m=(await kvGet('music'))||{};MU.vol=m.vol==null?60:m.vol;MU.cur=m.last||null;MU.favs=m.favs||[]}catch(e){}}
+async function muSave(){try{await kvSet('music',{vol:MU.vol,last:MU.cur,favs:MU.favs})}catch(e){}}
+function muRefresh(){if(tab=='mus')render();if(pipWin){pipRender();const g=MU.loaded?(MU.pl?2:1):0;if(g!==MU.sig){MU.sig=g;pipFit()}}}
+function muApi(){if(MU.api)return MU.api;return MU.api=new Promise((res,rej)=>{if(window.YT&&YT.Player)return res();const to=setTimeout(()=>rej(new Error('timeout')),10000);window.onYouTubeIframeAPIReady=()=>{clearTimeout(to);res()};const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.onerror=()=>{clearTimeout(to);rej(new Error('blocked'))};document.head.appendChild(s)}).catch(e=>{MU.api=null;throw e})}
+function muCue(){const c=MU.cur;if(!c||!MU.ready)return;MU.title='';MU.pl=c.type=='playlist';try{if(MU.pl)MU.p.cuePlaylist({listType:'playlist',list:c.id});else MU.p.cueVideoById(c.id);MU.loaded=true}catch(e){MU.err='Não foi possível carregar este conteúdo.'}muRefresh()}
+function muState(e){MU.playing=e.data===1;try{const d=MU.p.getVideoData();if(d&&d.title){MU.title=d.title;$('#mdt').textContent=d.title}}catch(x){}if(e.data===1)MU.err='';muRefresh()}
+function muErr(e){MU.err=MERR[e.data]||'Erro de reprodução ('+e.data+').';MU.playing=false;muRefresh()}
+async function muLoad(c){MU.err='';MU.cur=c;const d=$('#mdock');d.hidden=false;document.body.classList.add('hd');
+ try{await muApi()}catch(e){MU.err='Não foi possível carregar a API do YouTube. Verifique a conexão e se este ambiente permite scripts e vídeos do YouTube.';d.hidden=true;document.body.classList.remove('hd');MU.loaded=false;muRefresh();return}
+ try{if(!MU.p){const pv2={playsinline:1,rel:0};if(/^https?:/.test(location.protocol))pv2.origin=location.origin;MU.p=new YT.Player('mfr',{width:260,height:200,playerVars:pv2,events:{onReady:()=>{MU.ready=true;try{MU.p.setVolume(MU.vol)}catch(x){}muCue()},onStateChange:muState,onError:muErr}})}else muCue()}
+ catch(e){MU.err='Falha ao iniciar o player do YouTube.';d.hidden=true;document.body.classList.remove('hd')}
+ muSave();muRefresh()}
+function muClose(){try{if(MU.p&&MU.ready)MU.p.stopVideo()}catch(e){}const d=$('#mdock');if(d)d.hidden=true;document.body.classList.remove('hd');MU.loaded=false;MU.playing=false;MU.title='';muRefresh()}
+const muToggle=()=>{if(!MU.ready||!MU.loaded)return;try{MU.p.getPlayerState()===1?MU.p.pauseVideo():MU.p.playVideo()}catch(e){}};
+const muNext=()=>{if(MU.ready&&MU.pl)try{MU.p.nextVideo()}catch(e){}};
+const muPrev=()=>{if(MU.ready&&MU.pl)try{MU.p.previousVideo()}catch(e){}};
+const muVol=v=>{MU.vol=v;if(MU.ready)try{MU.p.setVolume(v)}catch(e){}};
+views.mus=function(){const c=MU.cur;
+ const fav=MU.favs.map((f,i)=>'<div class="it"><div style="min-width:0;flex:1"><b style="word-break:break-word">'+esc(f.title||f.url)+'</b><div class="k">'+(f.type=='playlist'?'Playlist':'Vídeo')+'</div></div><div class="row" style="margin:0"><button class="bt" data-a="mfp" data-i="'+i+'">Carregar</button><button class="bt dng" data-a="mrem" data-i="'+i+'">Remover</button></div></div>').join('');
+ const np=MU.loaded?'<div style="display:flex;align-items:center;gap:8px"><span class="mdot'+(MU.playing?' on':'')+'"></span><b style="word-break:break-word">'+esc(MU.title||'Carregando…')+'</b></div><div class="k">'+(MU.playing?'Tocando':'Pausado')+(MU.pl?' · playlist':'')+'</div><div class="row" style="justify-content:flex-start;align-items:center">'+(MU.pl?'<button class="bt" data-a="mprev" aria-label="Faixa anterior">'+I.prev+'</button>':'')+'<button class="bt pri" data-a="mtoggle" aria-label="'+(MU.playing?'Pausar':'Reproduzir')+'">'+(MU.playing?I.pause:I.play)+'</button>'+(MU.pl?'<button class="bt" data-a="mnext" aria-label="Próxima faixa">'+I.next+'</button>':'')+'<input id="mvol" type="range" min="0" max="100" value="'+MU.vol+'" aria-label="Volume" style="width:140px;padding:0"><button class="bt" data-a="mfsave">Salvar nos favoritos</button></div>':(c?'<p class="k">Último conteúdo: '+esc(c.url)+'</p><button class="bt pri" data-a="mlast">Carregar último</button>':'<div class="em">Nenhum conteúdo carregado. Cole um link acima.</div>');
+ return '<div class="card"><h2>Música para estudar</h2><label for="murl">Pesquise uma música ou cole um link do YouTube</label><div style="display:flex;gap:8px"><input id="murl" placeholder="Ex.: lofi para estudar, ou um link" value="'+esc(MU.draft)+'"><button class="bt pri" data-a="mload">'+svg(SRCH)+' Pesquisar</button></div>'+(MU.err?'<p role="alert" style="color:var(--r);margin:8px 0 0">'+esc(MU.err)+'</p>':'')+'<p class="k" style="margin-bottom:0">O player do YouTube fica visível no canto da tela enquanto houver conteúdo carregado, como exigem as regras do YouTube. A música não toca sozinha: aperte reproduzir.</p></div>'+muResults()+'<div class="card"><h2>Tocando agora</h2>'+np+'<p class="k" style="margin-bottom:0">A música é independente do cronômetro: pausar ou encerrar a sessão não a interrompe.</p></div><div class="card"><h2>Favoritos</h2>'+(fav||'<div class="em">Nenhum favorito salvo.</div>')+'</div>'+muKey()};
+act.mload=()=>{const i=$('#murl'),v=(i?i.value:MU.draft).trim();MU.err='';if(!v){MU.err='Digite uma busca ou cole um link do YouTube.';render();return}const c=parseYT(v);if(c){MU.draft='';MU.res=[];MU.serr='';muLoad(c);return}if(/^(https?:|www[.])/i.test(v)||/youtu/i.test(v)){MU.err='Link inválido. Cole o endereço de um vídeo ou playlist do YouTube.';render();return}muSearch(v)};
+act.mlast=()=>{if(MU.cur)muLoad(MU.cur)};act.mclose=()=>muClose();act.mtoggle=()=>muToggle();act.mnext=()=>muNext();act.mprev=()=>muPrev();
+act.mfp=d=>{const f=MU.favs[+d.i];if(f)muLoad({type:f.type,id:f.id,url:f.url})};
+act.mrem=d=>{MU.favs.splice(+d.i,1);muSave();render()};
+act.mfsave=()=>{if(!MU.cur)return;if(MU.favs.some(f=>f.id===MU.cur.id&&f.type===MU.cur.type)){toast('Já está nos favoritos');return}MU.favs.push({...MU.cur,title:MU.title||MU.cur.url});muSave();render();toast('Salvo nos favoritos')};
+pa.mplay=()=>muToggle();pa.mnext=()=>muNext();
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='murl')MU.draft=t.value;if(t.id==='mvol')muVol(+t.value)});
+document.addEventListener('change',e=>{if(e.target.id==='mvol')muSave()});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='murl')act.mload()});
+const _pip=act.pip;act.pip=async()=>{const had=!!pipWin;await _pip();if(pipWin&&!had){pipWin.document.addEventListener('input',e=>{if(e.target.id==='pvol')muVol(+e.target.value)});pipWin.document.addEventListener('change',e=>{if(e.target.id==='pvol')muSave()})}};
+const _p2=pipHTML;pipHTML=function(){const h=_p2();if(!MU.loaded||pcf||(T&&(T.endTs||pv=='mini')))return h;
+ const s='<div class="pmu"><span class="mdot'+(MU.playing?' on':'')+'"></span><span class="mt" title="'+esc(MU.title)+'">'+esc(MU.title||'Carregando…')+'</span>'+pb('mplay',MU.playing?I.pause:I.play,MU.playing?'Pausar música':'Tocar música','ic')+(MU.pl?pb('mnext',I.next,'Próxima faixa','ic'):'')+'<input type="range" id="pvol" min="0" max="100" value="'+MU.vol+'" aria-label="Volume"></div>';
+ const i=h.lastIndexOf('</div>');return i<0?h:h.slice(0,i)+s+h.slice(i)};
+/* ===== Navegação em 5 áreas (subtabs compactas em Progresso e Estudos) e pesquisa do YouTube (Data API v3, chave do próprio usuário) ===== */
+const NI={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',prog:'<path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/>',est:'<path d="M4 4h12a3 3 0 013 3v13H7a3 3 0 01-3-3z"/><path d="M8 8h7"/>',mus:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',cfg:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'};
+const SRCH='<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>';
+const SUBS={prog:[['ov','Visão geral'],['evo','Evolução'],['goal','Metas'],['ach','Conquistas']],est:[['hist','Sessões'],['subj','Assuntos']]},sub={prog:'ov',est:'hist'};
+const seg=g=>'<div class="seg" role="tablist">'+SUBS[g].map(([k,v])=>'<button role="tab" aria-selected="'+(sub[g]==k)+'" class="'+(sub[g]==k?'on':'')+'" data-a="sub" data-g="'+g+'" data-s="'+k+'">'+v+'</button>').join('')+'</div>';
+views.prog=()=>seg('prog')+views[sub.prog]();views.est=()=>seg('est')+views[sub.est]();
+act.sub=d=>{sub[d.g]=d.s;render()};
+const dec=s=>String(s||'').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+async function muSearch(q){MU.serr='';MU.res=[];if(!MU.key){MU.serr='Para pesquisar, configure sua chave da API do YouTube (seção "Configurar pesquisa", mais abaixo). Enquanto isso, cole um link.';render();return}
+ MU.busy=true;render();
+ try{const r=await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=8&q='+encodeURIComponent(q)+'&key='+encodeURIComponent(MU.key)),j=await r.json();
+  if(!r.ok){const re=j&&j.error&&j.error.errors&&j.error.errors[0]&&j.error.errors[0].reason;MU.serr={quotaExceeded:'A cota diária da API do YouTube acabou. Tente novamente amanhã.',dailyLimitExceeded:'A cota diária da API do YouTube acabou. Tente novamente amanhã.',keyInvalid:'Chave de API inválida.',accessNotConfigured:'A YouTube Data API v3 não está ativada para esta chave.',forbidden:'Acesso negado: confira as restrições da chave.',ipRefererBlocked:'A chave não permite este endereço (restrição de referenciador).'}[re]||'Erro na pesquisa ('+r.status+').'}
+  else{MU.res=(j.items||[]).filter(i=>i.id&&i.id.videoId).map(i=>({id:i.id.videoId,title:dec(i.snippet.title),ch:dec(i.snippet.channelTitle),th:i.snippet.thumbnails&&i.snippet.thumbnails.default&&i.snippet.thumbnails.default.url}));if(!MU.res.length)MU.serr='Nenhum resultado que permita reprodução incorporada.'}}
+ catch(e){MU.serr='Não foi possível conectar à pesquisa do YouTube. Verifique a conexão e se este ambiente permite acesso à API.'}
+ MU.busy=false;render()}
+function muResults(){if(MU.busy)return '<div class="card"><div class="em">Pesquisando…</div></div>';if(MU.serr)return '<div class="card"><p role="alert" style="color:var(--r);margin:0">'+esc(MU.serr)+'</p></div>';if(!MU.res.length)return '';
+ return '<div class="card"><h2>Resultados</h2>'+MU.res.map((r,i)=>'<div class="it" style="align-items:center"><div style="display:flex;gap:10px;align-items:center;min-width:0;flex:1">'+(r.th?'<img data-t="1" src="'+esc(r.th)+'" alt="" width="64" height="48" style="border-radius:6px;object-fit:cover;flex:none">':'')+'<div style="min-width:0"><b style="word-break:break-word">'+esc(r.title)+'</b><div class="k">'+esc(r.ch)+'</div></div></div><button class="bt pri" data-a="mres" data-i="'+i+'">Selecionar</button></div>').join('')+'<p class="k" style="margin-bottom:0">Resultados fornecidos pelos serviços de API do YouTube. <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener" style="color:var(--a)">Termos de Serviço do YouTube</a></p></div>'}
+function muKey(){return '<details class="card"><summary style="cursor:pointer;font-weight:600">Configurar pesquisa (chave da API do YouTube)</summary><p class="k">A pesquisa usa a YouTube Data API v3. No Google Cloud Console, crie uma chave, ative a API e restrinja a chave a essa API e ao seu endereço (referenciador HTTP). A chave fica só neste navegador, não entra nas exportações e não deve ser compartilhada. Cada pesquisa consome 100 unidades da cota diária.</p><div style="display:flex;gap:8px"><input id="mkey" type="password" autocomplete="off" placeholder="'+(MU.key?'Chave salva':'Cole sua chave de API')+'"><button class="bt" data-a="mkeys">Salvar</button>'+(MU.key?'<button class="bt dng" data-a="mkeyd">Remover</button>':'')+'</div></details>'}
+act.mres=d=>{const r=MU.res[+d.i];if(r)muLoad({type:'video',id:r.id,url:'https://www.youtube.com/watch?v='+r.id})};
+act.mkeys=async()=>{const i=$('#mkey'),v=i?i.value.trim():'';if(!/^[A-Za-z0-9_-]{20,}$/.test(v)){toast('Chave inválida');return}MU.key=v;await kvSet('ytkey',v);toast('Chave salva');render()};
+act.mkeyd=async()=>{MU.key='';await kvDel('ytkey');render();toast('Chave removida')};
+document.addEventListener('error',e=>{const i=e.target;if(i&&i.tagName==='IMG'&&i.dataset&&i.dataset.t)i.remove()},true);
+(async()=>{try{db=await new Promise((res,rej)=>{const r=indexedDB.open('studytime',2);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('sessions'))d.createObjectStore('sessions',{keyPath:'id'});if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('materials'))d.createObjectStore('materials',{keyPath:'id'}).createIndex('sid','sid')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+ T=(await kvGet('timer'))||null;goals=(await kvGet('goals'))||goals;subs=(await kvGet('subs'))||[];await muInit();await loadS();await loadM();try{navigator.storage.persist()}catch(e){}render();mountBrain();
+ if(T&&T.endTs){T.endTs=null;await saveT();toast('Sessão em andamento recuperada. Ela não foi agregada.')}
+}catch(e){$('#main').innerHTML='<div class="card">Não foi possível abrir o armazenamento do navegador (IndexedDB). Verifique se a navegação privada ou o bloqueio de dados está ativo.</div>'}})();
+</script></body></html>
